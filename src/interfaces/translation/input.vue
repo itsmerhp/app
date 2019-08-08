@@ -148,8 +148,8 @@ export default {
         newValue = this.value.map(translation => {
           let language = translation[this.options.translationLanguageField];
           if (
-            language === this.activeLanguage ||
-            language[this.options.languagesPrimaryKeyField] === this.activeLanguage
+            language == this.activeLanguage ||
+            language[this.options.languagesPrimaryKeyField] == this.activeLanguage
           ) {
             return {
               ...translation,
