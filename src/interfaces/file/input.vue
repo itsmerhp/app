@@ -199,7 +199,7 @@ export default {
     saveUpload(fileInfo) {
       this.image = fileInfo.data;
       // We know that the primary key of directus_files is called `id`
-      this.$emit("input", { id: fileInfo.data.id });
+      this.$emit("input", { id: fileInfo.data.id, file_data: this.image });
 
       this.newFile = false;
     },
@@ -223,7 +223,7 @@ export default {
     saveSelection(value) {
       const file = value[value.length - 1];
       this.image = file;
-      this.$emit("input", { id: file.id });
+      this.$emit("input", { id: file.id, file_data: this.image });
     },
     async removeFile() {
       const file = this.value;
