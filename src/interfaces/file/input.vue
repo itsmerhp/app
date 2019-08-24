@@ -192,14 +192,18 @@ export default {
       ];
     }
   },
-  created() {
+  async created() {
+    if (this.value && this.value.id) {
+      let fileData = await this.$api.getItem("directus_files", this.value.id);
+      this.image = fileData.data;
+    }
     this.onSearchInput = _.debounce(this.onSearchInput, 200);
   },
   methods: {
     saveUpload(fileInfo) {
       this.image = fileInfo.data;
       // We know that the primary key of directus_files is called `id`
-      this.$emit("input", { id: fileInfo.data.id, file_data: this.image });
+      this.$emit("input", { id: fileInfo.data.id });
 
       this.newFile = false;
     },
@@ -223,7 +227,7 @@ export default {
     saveSelection(value) {
       const file = value[value.length - 1];
       this.image = file;
-      this.$emit("input", { id: file.id, file_data: this.image });
+      this.$emit("input", { id: file.id });
     },
     async removeFile() {
       const file = this.value;
