@@ -128,7 +128,6 @@ export default {
       let newValue;
 
       if (!this.valuesByLang[this.activeLanguage]) {
-        value = value !== null && value.file_data !== undefined ? value.file_data : value;
         newValue = this.newItem
           ? [
               ...(this.value || []),
@@ -146,7 +145,6 @@ export default {
               }
             ];
       } else {
-        value = value !== null && value.file_data !== undefined ? value.file_data : value;
         newValue = this.value.map(translation => {
           let language = translation[this.options.translationLanguageField];
           if (
