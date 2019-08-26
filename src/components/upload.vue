@@ -212,11 +212,12 @@ export default {
 
       this.$api
         .uploadFiles(formData, ({ loaded, total }) => {
-          const progress = Math.round((loaded * 100) / total);
+          const progress = Math.min(Math.round((loaded * 100) / total), 95);
           this.files[id].progress = progress;
         })
         .then(res => res.data)
         .then(res => {
+          this.files[id].progress = 100;
           this.$emit("upload", {
             ...this.files[id],
             data: res
