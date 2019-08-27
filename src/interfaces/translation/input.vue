@@ -39,13 +39,16 @@
 
 <script>
 import mixin from "@directus/extension-toolkit/mixins/interface";
+import { diff } from "deep-object-diff";
 
 export default {
   mixins: [mixin],
   data() {
+    //this.$emit("input", null);
     return {
       activeLanguage: null,
-      languages: null
+      languages: null,
+      initialValue: _.cloneDeep(this.value) || []
     };
   },
   computed: {
@@ -126,8 +129,8 @@ export default {
     },
     stageValue({ field, value }) {
       let newValue;
-
       if (!this.valuesByLang[this.activeLanguage]) {
+        value = value !== null && value.file_data !== undefined ? value.file_data : value;
         newValue = this.newItem
           ? [
               ...(this.value || []),
@@ -145,6 +148,7 @@ export default {
               }
             ];
       } else {
+        value = value !== null && value.file_data !== undefined ? value.file_data : value;
         newValue = this.value.map(translation => {
           let language = translation[this.options.translationLanguageField];
           if (
@@ -160,14 +164,37 @@ export default {
           return translation;
         });
       }
-
-      newValue = newValue.map(values => {
-        const valuesCopy = Object.assign({}, values);
-        delete valuesCopy[this.fieldManyName];
-        return valuesCopy;
-      });
-
-      return this.$emit("input", newValue);
+      const before = this.initialValue;
+      let j = 0;
+      newValue = newValue
+        .map(values => {
+          const valuesCopy = Object.assign({}, values);
+          delete valuesCopy[this.fieldManyName];
+          if (before[j]) {
+            delete before[j][this.fieldManyName];
+            const delta = diff(before[j], valuesCopy);
+            j++;
+            if (Object.keys(delta).length > 0) {
+              const translationCollectionPrimarykeyField = _.find(this.relatedFields, {
+                primary_key: true
+              }).field;
+              const translationLanguageField = this.options.translationLanguageField;
+              delta[translationCollectionPrimarykeyField] =
+                valuesCopy[translationCollectionPrimarykeyField];
+              delta[translationLanguageField] = valuesCopy[translationLanguageField];
+              return delta;
+            } else {
+              return null;
+            }
+          } else {
+            return valuesCopy;
+          }
+        })
+        .filter(i => i);
+      //this.$set(this.initialValue, field, value);
+      this.$emit("input", newValue);
+      //console.log(newValue);
+      //return newValue;
     }
   }
 };

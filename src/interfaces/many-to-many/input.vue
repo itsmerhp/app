@@ -442,6 +442,15 @@ export default {
           const before = this.initialValue.find(i => i[this.junctionPrimaryKey] === primaryKey);
 
           if (before) {
+            //Remove recursive related field_one data
+            if (
+              !(
+                before[this.relation.field_many.field] &&
+                before[this.relation.field_many.field][this.relation.field_one.field]
+              )
+            )
+              delete after[this.relation.field_many.field][this.relation.field_one.field];
+
             const delta = diff(before, after);
 
             if (Object.keys(delta).length > 0) {
@@ -486,7 +495,7 @@ export default {
           $delete: true
         };
       });
-
+      console.log(newValue);
       this.$emit("input", [...newValue, ...deletedJunctionRows]);
     }
   }
