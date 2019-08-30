@@ -309,6 +309,11 @@ export default {
         delete defaults[this.relatedPrimaryKeyField];
       }
 
+      if (_.find(this.relation.collection_many.fields, { interface: "divider" }))
+        delete defaults[
+          _.find(this.relation.collection_many.fields, { interface: "divider" }).field
+        ];
+
       if (defaults.hasOwnProperty(manyToManyField)) {
         delete defaults[manyToManyField];
       }
