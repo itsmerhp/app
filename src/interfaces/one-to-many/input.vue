@@ -455,6 +455,8 @@ export default {
 
               if (type === "json") {
                 delta[key] = after[key];
+              } else if (type.toLowerCase() === "translation") {
+                delta[key] = after[key];
               }
             });
 
@@ -507,7 +509,6 @@ export default {
           $delete: true
         };
       });
-
       this.$emit("input", [...newValue, ...deletedRows]);
     }
   }
