@@ -455,7 +455,7 @@ export default {
 
               if (type === "json") {
                 delta[key] = after[key];
-              } else if (type.toLowerCase() === "translation") {
+              } else if (type === "translation") {
                 delta[key] = after[key];
               }
             });
