@@ -461,6 +461,12 @@ export default {
                 delta[key] = after[key];
               } else if (type === "translation") {
                 delta[key] = after[key];
+              } else if (type === "o2m") {
+                _.forEach(after[key], (val, index) => {
+                  if (after[key][index].$delete) {
+                    delta[key][index] = after[key][index];
+                  }
+                });
               }
             });
 
